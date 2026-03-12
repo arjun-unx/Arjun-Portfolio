@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Arjun Ramesh — Software Development Engineer specializing in full-stack systems, event-driven architecture, and high-performance web applications." />
+  <meta name="keywords" content="Arjun Ramesh, Software Engineer, Full Stack, Spring Boot, Angular, React, Java, TypeScript" />
+  <meta property="og:title" content="Arjun Ramesh — Software Engineer" />
+  <meta property="og:description" content="Full-stack SDE specializing in scalable systems, event-driven architecture, and performance-critical applications." />
+  <meta property="og:type" content="website" />
+  <title>Arjun Ramesh — Software Engineer</title>
+
+  <!-- Preload critical fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── CURSOR DOT ── -->
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ── NAVBAR ── -->
+  <nav id="navbar" role="navigation" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Arjun Ramesh home">
+        <span class="logo-mark">AR</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#experience" class="nav-link" data-section="experience">Experience</a></li>
+        <li><a href="#skills" class="nav-link" data-section="skills">Skills</a></li>
+        <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+        <li><a href="#education" class="nav-link" data-section="education">Education</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="icon-sun" aria-hidden="true">☀</span>
+          <span class="icon-moon" aria-hidden="true">☽</span>
+        </button>
+        <a href="mailto:arjunramesh1002@gmail.com" class="btn-outline" aria-label="Hire Arjun">Hire me</a>
+      </div>
+
+      <button id="mobile-menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div id="mobile-menu" aria-hidden="true">
+      <ul role="list">
+        <li><a href="#experience" class="nav-link">Experience</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#education" class="nav-link">Education</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="hero" aria-label="Introduction">
+    <div class="hero-bg-grid" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge reveal">
+        <span class="badge-dot"></span>
+        Available for opportunities
+      </div>
+
+      <h1 class="hero-name reveal">
+        <span>Arjun</span>
+        <span class="accent-text">Ramesh</span>
+      </h1>
+
+      <p class="hero-title reveal">Software Development Engineer</p>
+
+      <p class="hero-description reveal">
+        I build high-performance, event-driven systems that scale. From 
+        <span class="inline-highlight">fault-tolerant microservices</span> to 
+        <span class="inline-highlight">sub-150ms APIs</span> — I ship software 
+        that moves real business outcomes.
+      </p>
+
+      <div class="hero-stats reveal">
+        <div class="stat">
+          <span class="stat-value">30%</span>
+          <span class="stat-label">Order processing faster</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat">
+          <span class="stat-value">400ms→120ms</span>
+          <span class="stat-label">API response time</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat">
+          <span class="stat-value">5 hrs/wk</span>
+          <span class="stat-label">Saved via automation</span>
+        </div>
+      </div>
+
+      <div class="hero-actions reveal">
+        <a href="#experience" class="btn-primary">View my work</a>
+        <a href="mailto:arjunramesh1002@gmail.com" class="btn-ghost">arjunramesh1002@gmail.com</a>
+      </div>
+
+      <div class="hero-links reveal">
+        <a href="https://linkedin.com/in/arjunramesh163/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/arjun-unx" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          GitHub
+        </a>
+        <a href="tel:+918838308061" aria-label="Phone number">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          +91 88383 08061
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-3d-card reveal" aria-hidden="true">
+      <div class="card-3d-inner" id="hero-card">
+        <div class="card-glow"></div>
+        <div class="card-lines">
+          <div class="card-line-group">
+            <span class="code-comment">// current role</span>
+            <span class="code-line"><span class="code-key">company</span><span class="code-op">:</span> <span class="code-str">"Techtinium"</span></span>
+            <span class="code-line"><span class="code-key">title</span><span class="code-op">:</span> <span class="code-str">"SDE-1"</span></span>
+            <span class="code-line"><span class="code-key">since</span><span class="code-op">:</span> <span class="code-str">"Dec 2024"</span></span>
+          </div>
+          <div class="card-separator"></div>
+          <div class="card-line-group">
+            <span class="code-comment">// impact metrics</span>
+            <span class="code-line"><span class="code-key">apiLatency</span><span class="code-op">:</span> <span class="code-num">"-70%"</span></span>
+            <span class="code-line"><span class="code-key">orderThroughput</span><span class="code-op">:</span> <span class="code-num">"+30%"</span></span>
+            <span class="code-line"><span class="code-key">dbCpuLoad</span><span class="code-op">:</span> <span class="code-num">"-25%"</span></span>
+          </div>
+          <div class="card-separator"></div>
+          <div class="card-line-group">
+            <span class="code-comment">// stack</span>
+            <span class="code-line"><span class="code-key">backend</span><span class="code-op">:</span> <span class="code-str">["Java", "Spring Boot"]</span></span>
+            <span class="code-line"><span class="code-key">frontend</span><span class="code-op">:</span> <span class="code-str">["Angular", "React"]</span></span>
+            <span class="code-line"><span class="code-key">infra</span><span class="code-op">:</span> <span class="code-str">["AWS", "Docker"]</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERIENCE ── -->
+  <section id="experience" aria-labelledby="exp-heading">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Experience</span>
+        <h2 id="exp-heading">Where I've shipped</h2>
+      </div>
+
+      <div class="timeline">
+
+        <!-- Techtinium -->
+        <article class="timeline-item reveal" aria-label="Techtinium experience">
+          <div class="timeline-meta">
+            <div class="timeline-dot"></div>
+            <div class="timeline-period">Dec 2024 — Present</div>
+          </div>
+          <div class="timeline-body">
+            <div class="timeline-header">
+              <div>
+                <h3 class="timeline-role">Software Development Engineer — I</h3>
+                <p class="timeline-company">
+                  <span class="company-name">Techtinium</span>
+                  <span class="company-location">Chennai, India</span>
+                </p>
+              </div>
+              <div class="timeline-tags">
+                <span class="tag">Full Stack</span>
+                <span class="tag">Systems</span>
+              </div>
+            </div>
+
+            <ul class="timeline-bullets" role="list">
+              <li>
+                <span class="bullet-icon" aria-hidden="true">⚡</span>
+                <span>Built end-to-end <strong>Order & Shipping modules</strong> with Spring Boot + Angular 16+, implementing JWT auth; cut order processing time <strong>30%</strong> via NgRx state caching to eliminate redundant API calls.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🗄</span>
+                <span>Designed and optimized <strong>PostgreSQL schemas</strong> for logistics/payment systems — normalization, partitioning, CTE-based queries, and strategic indexing across 10+ core tables.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">📨</span>
+                <span>Engineered a <strong>fault-tolerant event-driven architecture</strong> using RabbitMQ to decouple inventory from email notifications, handling <strong>50+ concurrent orders/min</strong> at peak with zero latency.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🏎</span>
+                <span>Migrated hot product lookups to <strong>Redis cache</strong>, cutting DB CPU load <strong>25%</strong> and average API response time from <strong>400ms → 120ms</strong>.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🛍</span>
+                <span>Built a custom <strong>Shopify App</strong> (Remix + Node.js) for automated bulk order/product processing with two-way sync to the B2B portal, eliminating manual CSV exports.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🤖</span>
+                <span>Automated reconciliation of <strong>100+ daily transactions</strong> between Zoho Books and Google Sheets via Python CRON, saving <strong>5 hrs/week</strong>; built real-time analytics dashboard using AWS Lambda + WebSockets + Shiprocket webhooks.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🔧</span>
+                <span>Resolved <strong>20+ critical logic bugs</strong> using AWS CloudWatch tracing; maintained CI/CD pipelines with GitHub Actions; collaborated with PMs on feature planning.</span>
+              </li>
+            </ul>
+
+            <div class="tech-pills">
+              <span class="tech-pill">Spring Boot</span>
+              <span class="tech-pill">Angular 16+</span>
+              <span class="tech-pill">NgRx</span>
+              <span class="tech-pill">RabbitMQ</span>
+              <span class="tech-pill">Redis</span>
+              <span class="tech-pill">PostgreSQL</span>
+              <span class="tech-pill">Remix</span>
+              <span class="tech-pill">AWS Lambda</span>
+              <span class="tech-pill">WebSockets</span>
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">JWT</span>
+              <span class="tech-pill">GitHub Actions</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Klenty -->
+        <article class="timeline-item reveal" aria-label="Klenty experience">
+          <div class="timeline-meta">
+            <div class="timeline-dot"></div>
+            <div class="timeline-period">Jul 2024 — Dec 2024</div>
+          </div>
+          <div class="timeline-body">
+            <div class="timeline-header">
+              <div>
+                <h3 class="timeline-role">Software Development Engineer — Intern</h3>
+                <p class="timeline-company">
+                  <span class="company-name">Klenty</span>
+                  <span class="company-location">Chennai, India</span>
+                </p>
+              </div>
+              <div class="timeline-tags">
+                <span class="tag">Backend</span>
+                <span class="tag">Extension</span>
+              </div>
+            </div>
+
+            <ul class="timeline-bullets" role="list">
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🔍</span>
+                <span>Built a <strong>prospect view</strong> for the Sales Engagement Platform, integrating 4 efficient endpoints and reducing query latency by <strong>15%</strong>.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">📊</span>
+                <span>Designed API logging workflows in <strong>AWS Lambda</strong> capturing success/failure states in MongoDB; implemented throttling and cookie-based session management to reduce re-login cycles.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">🔌</span>
+                <span>Enhanced the <strong>CallIQ Chrome Extension</strong> via low-level DOM manipulation and web scraping pipelines, resolving 2 major bottlenecks — achieved <strong>25% performance improvement</strong> for 100+ daily users.</span>
+              </li>
+              <li>
+                <span class="bullet-icon" aria-hidden="true">✨</span>
+                <span>Delivered <strong>7 new features</strong> including a React WYSIWYG editor (TypeScript + WebSockets); fixed 15+ production bugs; achieved <strong>15% backend test coverage</strong> with Mocha/Sinon.</span>
+              </li>
+            </ul>
+
+            <div class="tech-pills">
+              <span class="tech-pill">Node.js</span>
+              <span class="tech-pill">React</span>
+              <span class="tech-pill">TypeScript</span>
+              <span class="tech-pill">MongoDB</span>
+              <span class="tech-pill">AWS Lambda</span>
+              <span class="tech-pill">WebSockets</span>
+              <span class="tech-pill">Chrome Extension</span>
+              <span class="tech-pill">Mocha</span>
+              <span class="tech-pill">Sinon</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS ── -->
+  <section id="skills" aria-labelledby="skills-heading">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Technical Skills</span>
+        <h2 id="skills-heading">Stack &amp; toolbox</h2>
+      </div>
+
+      <div class="skills-grid">
+
+        <div class="skill-category reveal">
+          <div class="skill-cat-header">
+            <span class="skill-cat-icon" aria-hidden="true">{ }</span>
+            <h3>Languages</h3>
+          </div>
+          <div class="skill-list">
+            <div class="skill-item"><span class="skill-name">Java</span><div class="skill-bar"><div class="skill-fill" style="--fill:90%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">TypeScript</span><div class="skill-bar"><div class="skill-fill" style="--fill:85%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">JavaScript</span><div class="skill-bar"><div class="skill-fill" style="--fill:88%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">Python</span><div class="skill-bar"><div class="skill-fill" style="--fill:75%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">SQL</span><div class="skill-bar"><div class="skill-fill" style="--fill:82%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category reveal">
+          <div class="skill-cat-header">
+            <span class="skill-cat-icon" aria-hidden="true">▦</span>
+            <h3>Frontend</h3>
+          </div>
+          <div class="skill-list">
+            <div class="skill-item"><span class="skill-name">Angular 16+</span><div class="skill-bar"><div class="skill-fill" style="--fill:88%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">React.js</span><div class="skill-bar"><div class="skill-fill" style="--fill:82%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">NgRx / Redux</span><div class="skill-bar"><div class="skill-fill" style="--fill:80%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">RxJS</span><div class="skill-bar"><div class="skill-fill" style="--fill:78%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">HTML/CSS</span><div class="skill-bar"><div class="skill-fill" style="--fill:90%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category reveal">
+          <div class="skill-cat-header">
+            <span class="skill-cat-icon" aria-hidden="true">⚙</span>
+            <h3>Backend & Data</h3>
+          </div>
+          <div class="skill-list">
+            <div class="skill-item"><span class="skill-name">Spring Boot</span><div class="skill-bar"><div class="skill-fill" style="--fill:88%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">Node.js</span><div class="skill-bar"><div class="skill-fill" style="--fill:80%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">PostgreSQL</span><div class="skill-bar"><div class="skill-fill" style="--fill:85%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">Redis</span><div class="skill-bar"><div class="skill-fill" style="--fill:80%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">MongoDB</span><div class="skill-bar"><div class="skill-fill" style="--fill:78%"></div></div></div>
+          </div>
+        </div>
+
+        <div class="skill-category reveal">
+          <div class="skill-cat-header">
+            <span class="skill-cat-icon" aria-hidden="true">☁</span>
+            <h3>Infra & Messaging</h3>
+          </div>
+          <div class="skill-list">
+            <div class="skill-item"><span class="skill-name">AWS (EC2, S3, Lambda)</span><div class="skill-bar"><div class="skill-fill" style="--fill:80%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">RabbitMQ</span><div class="skill-bar"><div class="skill-fill" style="--fill:82%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">Apache Kafka</span><div class="skill-bar"><div class="skill-fill" style="--fill:70%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">Docker / Kubernetes</span><div class="skill-bar"><div class="skill-fill" style="--fill:72%"></div></div></div>
+            <div class="skill-item"><span class="skill-name">Elasticsearch</span><div class="skill-bar"><div class="skill-fill" style="--fill:68%"></div></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DSA callout -->
+      <div class="dsa-callout reveal">
+        <span class="dsa-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </span>
+        <span>Solved <strong>100+ problems</strong> on LeetCode and GFG — Data Structures, Algorithms, and OOP.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects" aria-labelledby="projects-heading">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Projects</span>
+        <h2 id="projects-heading">Things I've built</h2>
+      </div>
+
+      <div class="projects-grid">
+
+        <article class="project-card reveal" aria-label="Task Manager project">
+          <div class="project-card-inner">
+            <div class="project-header">
+              <div class="project-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/arjun-unx" target="_blank" rel="noopener noreferrer" aria-label="Source code">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3 class="project-title">Task Manager</h3>
+            <p class="project-desc">Secure, full-featured task management app with JWT authentication, task creation, reminders, rich note editing, pin/search functionality, and real-time sync.</p>
+            <div class="project-tech">
+              <span class="tech-pill small">Angular</span>
+              <span class="tech-pill small">Spring Boot</span>
+              <span class="tech-pill small">MongoDB</span>
+              <span class="tech-pill small">JWT</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card reveal" aria-label="Attendance Tracker project">
+          <div class="project-card-inner">
+            <div class="project-header">
+              <div class="project-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div class="project-links">
+                <a href="https://github.com/arjun-unx" target="_blank" rel="noopener noreferrer" aria-label="Source code">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                </a>
+              </div>
+            </div>
+            <h3 class="project-title">Attendance Tracker</h3>
+            <p class="project-desc">Daily attendance recording system with holiday/overtime management, Google Calendar sync, PostgreSQL-backed persistence, and JWT-secured access.</p>
+            <div class="project-tech">
+              <span class="tech-pill small">React</span>
+              <span class="tech-pill small">Spring Boot</span>
+              <span class="tech-pill small">PostgreSQL</span>
+              <span class="tech-pill small">JWT</span>
+              <span class="tech-pill small">Google Calendar API</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EDUCATION ── -->
+  <section id="education" aria-labelledby="edu-heading">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Education</span>
+        <h2 id="edu-heading">Academic foundation</h2>
+      </div>
+
+      <div class="edu-card reveal">
+        <div class="edu-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="edu-body">
+          <h3 class="edu-degree">B.Tech in Computer Science</h3>
+          <p class="edu-spec">Specialization: Artificial Intelligence &amp; Machine Learning</p>
+          <p class="edu-institution">Sri Ramachandra Institute of Higher Education and Research</p>
+          <div class="edu-meta">
+            <span class="edu-period">2020 – 2024</span>
+            <span class="edu-location">Chennai, India</span>
+            <span class="edu-gpa">CGPA: <strong>9.2 / 10.0</strong></span>
+          </div>
+          <div class="edu-achievement">
+            <span class="achievement-badge" aria-label="Hackathon achievement">
+              🏆 1st Place — National Level Hackathon (KCE '23) + Special Mention
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI ASSISTANT ── -->
+  <section id="ai-assistant" aria-labelledby="ai-heading">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">AI Assistant</span>
+        <h2 id="ai-heading">Ask about my experience</h2>
+        <p class="section-subtitle">Powered by resume knowledge — ask anything about my skills, projects, or background.</p>
+      </div>
+
+      <div class="ai-widget reveal">
+        <div class="ai-chat-window" id="ai-chat-window" aria-live="polite" aria-label="AI conversation">
+          <div class="ai-message ai-bot">
+            <span class="ai-avatar" aria-hidden="true">AR</span>
+            <div class="ai-bubble">
+              Hi! I'm an AI assistant with knowledge of Arjun's resume. Ask me anything — his tech stack, impact metrics, experience, or approach to system design.
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-suggestions">
+          <button class="ai-suggestion" data-query="What is Arjun's strongest technical skill?">Strongest skill?</button>
+          <button class="ai-suggestion" data-query="What performance improvements has Arjun made?">Performance wins?</button>
+          <button class="ai-suggestion" data-query="What systems has Arjun architected?">Systems built?</button>
+          <button class="ai-suggestion" data-query="What is Arjun's experience with cloud and AWS?">Cloud experience?</button>
+        </div>
+
+        <div class="ai-input-row">
+          <input
+            type="text"
+            id="ai-input"
+            placeholder="Ask anything about Arjun's experience…"
+            autocomplete="off"
+            aria-label="Question for AI assistant"
+            maxlength="200"
+          />
+          <button id="ai-send" aria-label="Send question">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Contact</span>
+        <h2 id="contact-heading">Let's work together</h2>
+        <p class="section-subtitle">Open to full-time SDE roles, contract work, and interesting engineering problems.</p>
+      </div>
+
+      <div class="contact-grid reveal">
+        <a href="mailto:arjunramesh1002@gmail.com" class="contact-card" aria-label="Send email to Arjun">
+          <span class="contact-card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          <span class="contact-card-label">Email</span>
+          <span class="contact-card-value">arjunramesh1002@gmail.com</span>
+        </a>
+        <a href="https://linkedin.com/in/arjunramesh163/" target="_blank" rel="noopener noreferrer" class="contact-card" aria-label="View LinkedIn profile">
+          <span class="contact-card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </span>
+          <span class="contact-card-label">LinkedIn</span>
+          <span class="contact-card-value">arjunramesh163</span>
+        </a>
+        <a href="https://github.com/arjun-unx" target="_blank" rel="noopener noreferrer" class="contact-card" aria-label="View GitHub profile">
+          <span class="contact-card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          </span>
+          <span class="contact-card-label">GitHub</span>
+          <span class="contact-card-value">arjun-unx</span>
+        </a>
+        <a href="tel:+918838308061" class="contact-card" aria-label="Call Arjun">
+          <span class="contact-card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          </span>
+          <span class="contact-card-label">Phone</span>
+          <span class="contact-card-value">+91 88383 08061</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <p class="footer-name">Arjun Ramesh</p>
+      <p class="footer-note">Engineered with intent. Built for clarity.</p>
+      <p class="footer-copy">&copy; 2025 Arjun Ramesh. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

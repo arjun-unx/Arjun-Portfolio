@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-scene: #fafafa;
+    --fg-primary: #111827;
+    --fg-secondary: #4b5563;
+    --card-glass: rgba(255, 255, 255, 0.7);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --accent-1: #2563eb;
+    --accent-2: #4f46e5;
+    --accent-hover: #3b82f6;
+  }
+
+  [data-theme='dark'] {
+    --bg-scene: #030712;
+    --fg-primary: #f9fafb;
+    --fg-secondary: #9ca3af;
+    --card-glass: rgba(17, 24, 39, 0.6);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --accent-1: #3b82f6;
+    --accent-2: #8b5cf6;
+    --accent-hover: #60a5fa;
+  }
+
+  * {
+    border-color: var(--border-subtle);
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    @apply overflow-x-hidden max-w-[100vw];
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased overflow-x-hidden max-w-[100vw];
+  }
+
+  ::selection {
+    background-color: rgba(37, 99, 235, 0.3); /* accent-1/30 */
+    color: var(--fg-primary);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-1 to-accent-2;
+  }
+  .glass-card {
+    background-color: var(--card-glass);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  }
+  .glass-nav {
+    background-color: color-mix(in srgb, var(--bg-scene) 80%, transparent);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background-color: var(--accent-1);
+    color: #fff;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.2s;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-secondary);
+}

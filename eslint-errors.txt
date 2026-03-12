@@ -1,0 +1,46 @@
+
+/Users/arjun/Personal Projects/Portfolio/app.js
+   12:7  warning  'RESUME' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  378:3  warning  'animFrame' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/arjun/Personal Projects/Portfolio/src/app/api/chat/route.ts
+  35:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  68:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/arjun/Personal Projects/Portfolio/src/components/sections/AiAssistant.tsx
+   76:14  warning  'err' is defined but never used                                  @typescript-eslint/no-unused-vars
+  113:18  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  144:73  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/arjun/Personal Projects/Portfolio/src/components/sections/Hero.tsx
+    6:10   warning  'TechPill' is defined but never used                             @typescript-eslint/no-unused-vars
+   16:9    warning  'y1' is assigned a value but never used                          @typescript-eslint/no-unused-vars
+  134:116  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  134:133  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/arjun/Personal Projects/Portfolio/src/lib/hooks/useCursor.ts
+  3:21  warning  'useRef' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/arjun/Personal Projects/Portfolio/src/lib/hooks/useReveal.ts
+  37:6  warning  React Hook useEffect has a missing dependency: 'options'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/arjun/Personal Projects/Portfolio/src/lib/hooks/useTheme.ts
+  20:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/arjun/Personal Projects/Portfolio/src/lib/hooks/useTheme.ts:20:5
+  18 |       "data-theme",
+  19 |     ) as Theme;
+> 20 |     setTheme(current === "light" ? "light" : "dark");
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |
+  22 |     // Follow OS changes only when no user preference is stored
+  23 |     const mq = window.matchMedia("(prefers-color-scheme: dark)");  react-hooks/set-state-in-effect
+
+✖ 14 problems (7 errors, 7 warnings)
+
