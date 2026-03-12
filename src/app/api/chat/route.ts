@@ -1,6 +1,9 @@
 import { RESUME } from "@/lib/resume";
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 // Deep system prompt injection
 const SYSTEM_INSTRUCTION = `
 You are the personal AI agent for Arjun Ramesh, an elite Software & AI Engineer.
@@ -50,6 +53,8 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       },
       body: JSON.stringify({
         messages,
@@ -71,7 +76,12 @@ export async function POST(req: Request) {
     console.error("AI Route Error:", error);
 
     return NextResponse.json(
-      { error: "Failed to generate response" },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to generate response",
+      },
       { status: 500 },
     );
   }
