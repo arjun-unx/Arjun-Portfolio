@@ -1,14 +1,23 @@
-import { RESUME } from "@/lib/resume";
 import { NextResponse } from "next/server";
+import { RESUME } from "@/lib/resume";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-// Deep system prompt injection
+interface HistoryEntry {
+  role: "user" | "model";
+  parts: Array<{ text: string }>;
+}
+
+interface ChatRequest {
+  message: string;
+  history?: HistoryEntry[];
+}
+
 const SYSTEM_INSTRUCTION = `
 You are the personal AI agent for Arjun Ramesh, an elite Software & AI Engineer.
 You speak in first person as his representative, but you are an AI assistant.
-Your tone is highly professional, calm, extremely concise, confident, and direct. 
+Your tone is highly professional, calm, extremely concise, confident, and direct.
 You avoid fluff, exaggerations, or marketing jargon. You speak in terms of systems, performance, scalability, and impact.
 You exist to answer questions from recruiters and engineering managers reviewing Arjun's portfolio.
 
@@ -25,7 +34,8 @@ Rules for answering:
 
 export async function POST(req: Request) {
   try {
-    const { message, history } = await req.json();
+    const body = (await req.json()) as ChatRequest;
+    const message = typeof body.message === "string" ? body.message.trim() : "";
 
     if (!message) {
       return NextResponse.json(
@@ -34,13 +44,17 @@ export async function POST(req: Request) {
       );
     }
 
-    // Map Google Gemini style history from the frontend to OpenAI/Pollinations style
-    const memory = (history || []).map(
-      (h: { role: string; parts: { text: string }[] }) => ({
+    // Map Gemini-style history (role + parts) to OpenAI-style (role + content).
+    const memory = (body.history ?? [])
+      .filter(
+        (h): h is HistoryEntry =>
+          !!h && Array.isArray(h.parts) && h.parts.length > 0,
+      )
+      .map((h) => ({
         role: h.role === "model" ? "assistant" : "user",
-        content: h.parts[0].text,
-      }),
-    );
+        content: h.parts[0]?.text ?? "",
+      }))
+      .filter((h) => h.content);
 
     const messages = [
       { role: "system", content: SYSTEM_INSTRUCTION },
@@ -48,33 +62,29 @@ export async function POST(req: Request) {
       { role: "user", content: message },
     ];
 
-    // Pollinations AI provides a free, keyless endpoint proxying to high-quality LLMs
-    const res = await fetch("https://text.pollinations.ai/", {
+    const upstream = await fetch("https://text.pollinations.ai/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       },
-      body: JSON.stringify({
-        messages,
-        model: "openai-fast", // Sub-second inference proxy
-        seed: 42,
-      }),
+      body: JSON.stringify({ messages, model: "openai-fast", seed: 42 }),
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error("Pollinations API Error payload:", errText, res.status);
-      throw new Error("Free API proxy failed: " + res.status);
+    if (!upstream.ok) {
+      const errText = await upstream.text().catch(() => "");
+      console.error("Upstream chat error", upstream.status, errText);
+      return NextResponse.json(
+        { error: "Upstream model unavailable" },
+        { status: 502 },
+      );
     }
 
-    const response = await res.text();
-
+    const response = await upstream.text();
     return NextResponse.json({ response });
   } catch (error: unknown) {
-    console.error("AI Route Error:", error);
-
+    console.error("Chat route error:", error);
     return NextResponse.json(
       {
         error:

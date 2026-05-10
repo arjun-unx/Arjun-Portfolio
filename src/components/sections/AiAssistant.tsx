@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Bot, RefreshCw, Send, Sparkles, User } from "lucide-react";
 import { parseMarkdown } from "@/lib/utils/parseMarkdown";
-import { Send, Bot, User, Sparkles } from "lucide-react";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { cn } from "@/lib/utils/cn";
 
 interface Message {
   id: string;
@@ -11,37 +13,37 @@ interface Message {
   text: string;
 }
 
+const INITIAL_GREETING =
+  "Hi! I'm Arjun's AI Agent. I have deep context on his experience building RAG pipelines, scalable backends, and full-stack SaaS products. Ask me anything about his architecture decisions or impact.";
+
 const SUGGESTIONS = [
   "What is Arjun's experience with AI Agents and RAG?",
   "How did he reduce API latency from 400ms to 120ms?",
   "Tell me about the Agentic Legal Analyst project.",
   "What cloud and infrastructure tools does he use?",
+] as const;
+
+const initialMessages: Message[] = [
+  { id: "init", role: "bot", text: INITIAL_GREETING },
 ];
 
 export function AiAssistant() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "init",
-      role: "bot",
-      text: "Hi! I'm Arjun's AI Agent. I have deep context on his experience building RAG pipelines, scalable backends, and full-stack SaaS products. Ask me anything about his architecture decisions or impact.",
-    },
-  ]);
+  const reduce = useReducedMotion();
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  };
-
+  // Auto-scroll the message log to the latest entry without yanking the page.
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isLoading]);
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: reduce ? "auto" : "smooth",
+    });
+  }, [messages, isLoading, reduce]);
 
   const handleQuery = async (query: string) => {
     const trimmed = query.trim();
@@ -50,11 +52,14 @@ export function AiAssistant() {
     setIsLoading(true);
     setInputValue("");
 
-    const userMsg: Message = { id: `u-${Date.now()}`, role: "user", text: trimmed };
+    const userMsg: Message = {
+      id: `u-${Date.now()}`,
+      role: "user",
+      text: trimmed,
+    };
     setMessages((prev) => [...prev, userMsg]);
 
     try {
-      // Prepare history for context
       const history = messages
         .filter((m) => m.id !== "init")
         .map((m) => ({
@@ -67,160 +72,236 @@ export function AiAssistant() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed, history }),
       });
-
-      if (!res.ok) throw new Error("API error");
+      if (!res.ok) throw new Error(`API error ${res.status}`);
 
       const data = await res.json();
-      const botMsg: Message = { id: `b-${Date.now()}`, role: "bot", text: data.response };
-      setMessages((prev) => [...prev, botMsg]);
+      setMessages((prev) => [
+        ...prev,
+        { id: `b-${Date.now()}`, role: "bot", text: data.response },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
         {
           id: `err-${Date.now()}`,
           role: "bot",
-          text: "I'm having trouble connecting right now. Please try again or reach out to Arjun directly via email.",
+          text: "I'm having trouble connecting right now. Please try again, or reach out to Arjun directly via email.",
         },
       ]);
     } finally {
       setIsLoading(false);
+      // Return focus to the input for fast follow-up questions.
+      inputRef.current?.focus();
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleQuery(inputValue);
     }
   };
 
+  const reset = () => {
+    if (isLoading) return;
+    setMessages(initialMessages);
+  };
+
   return (
-    <section id="ai-assistant" className="py-16 lg:py-20 relative" aria-labelledby="ai-heading">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent-2/5 to-transparent pointer-events-none" />
-      
-      <div className="container mx-auto px-6 max-w-5xl relative z-10">
-        <div className="flex flex-col md:flex-row gap-12 items-start">
-          
-          <div className="w-full md:w-1/3 pt-4">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-accent-2/30 bg-accent-2/10 text-accent-2 text-sm font-medium mb-6">
-              <Sparkles size={14} />
-              <span>Real AI Integration</span>
+    <section
+      id="ai-assistant"
+      aria-labelledby="ai-heading"
+      className="relative py-24 md:py-32 lg:py-40"
+    >
+      <div className="container-page max-w-5xl">
+        <SectionHeader
+          eyebrow="Assistant"
+          id="ai-heading"
+          align="center"
+          title={
+            <>
+              Skip the resume —{" "}
+              <span className="text-gradient">ask the agent</span>.
+            </>
+          }
+          description="A retrieval-grounded assistant trained on Arjun's experience, architecture decisions, and measurable impact. Real production AI integration, not a sample."
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: reduce ? 0 : 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="surface surface-shine flex h-[640px] flex-col overflow-hidden"
+        >
+          {/* Top bar */}
+          <header className="flex shrink-0 items-center justify-between border-b border-hairline px-5 py-4">
+            <div className="flex items-center gap-3">
+              <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-accent text-background">
+                <Sparkles size={16} className="text-white" />
+              </span>
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Arjun&apos;s AI agent
+                </p>
+                <p className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
+                  <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 align-middle" />
+                  online · context ready
+                </p>
+              </div>
             </div>
-            <h2 id="ai-heading" className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-              Ask my <br/> <span className="text-gradient">AI Agent</span>
-            </h2>
-            <p className="text-fg-secondary text-lg font-light leading-relaxed mb-8">
-              Don&apos;t want to read a long resume? I built this AI agent using OpenAI APIs to answer questions instantly, providing deep context about my engineering decisions, projects, and measurable impact.
-            </p>
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-foreground/70 uppercase tracking-wider mb-2">Suggested</span>
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => handleQuery(s)}
-                  disabled={isLoading}
-                  className="text-left py-2 px-4 rounded-lg bg-card border border-border text-sm text-foreground/80 hover:bg-accent-1 hover:text-white hover:border-accent-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+
+            <button
+              type="button"
+              onClick={reset}
+              disabled={isLoading || messages.length <= 1}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <RefreshCw size={11} />
+              Reset
+            </button>
+          </header>
+
+          {/* Conversation */}
+          <div
+            ref={scrollRef}
+            className="flex-1 space-y-5 overflow-y-auto px-5 py-6 md:px-7"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
+            <AnimatePresence initial={false}>
+              {messages.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: reduce ? 0 : 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className={cn(
+                    "flex gap-3",
+                    msg.role === "user" ? "flex-row-reverse" : "flex-row",
+                  )}
                 >
-                  {s}
-                </button>
+                  <span
+                    className={cn(
+                      "mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+                      msg.role === "user"
+                        ? "bg-foreground text-background"
+                        : "border border-hairline bg-surface text-foreground",
+                    )}
+                  >
+                    {msg.role === "user" ? (
+                      <User size={13} />
+                    ) : (
+                      <Bot size={13} />
+                    )}
+                  </span>
+
+                  <div
+                    className={cn(
+                      "max-w-[78%] rounded-2xl px-4 py-3 text-[14px] leading-[1.6]",
+                      msg.role === "user"
+                        ? "bg-foreground text-background rounded-tr-sm"
+                        : "border border-hairline bg-surface text-foreground/90 rounded-tl-sm",
+                    )}
+                  >
+                    {msg.role === "bot" ? (
+                      <div
+                        className="assistant-prose"
+                        dangerouslySetInnerHTML={{
+                          __html: parseMarkdown(msg.text),
+                        }}
+                      />
+                    ) : (
+                      msg.text
+                    )}
+                  </div>
+                </motion.div>
               ))}
-            </div>
+
+              {isLoading && (
+                <motion.div
+                  key="typing"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-3"
+                >
+                  <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-surface text-foreground">
+                    <Bot size={13} />
+                  </span>
+                  <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm border border-hairline bg-surface px-4 py-3.5">
+                    {[0, 0.18, 0.36].map((d) => (
+                      <motion.span
+                        key={d}
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{
+                          duration: 1.2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: d,
+                        }}
+                        className="h-1.5 w-1.5 rounded-full bg-foreground/60"
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "400px" }}
-            transition={{ duration: 0.6 }}
-            className="w-full md:w-2/3 glass-card flex flex-col h-[600px] overflow-hidden border border-accent-1/20 shadow-2xl relative"
-          >
-            {/* Top Bar */}
-            <div className="h-14 border-b border-border bg-card/80 backdrop-blur-md flex items-center px-4 justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-accent-2 to-accent-1 flex items-center justify-center">
-                  <Bot size={18} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium leading-none">Arjun&apos;s AI</h3>
-                  <span className="text-[10px] text-green-500 font-mono">● Online & Context Ready</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Chat Area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-background/30" role="log" aria-live="polite">
-              <AnimatePresence initial={false}>
-                {messages.map((msg) => (
-                  <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                  >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === "user" ? "bg-foreground text-background" : "bg-accent-1/20 text-accent-hover"}`}>
-                      {msg.role === "user" ? <User size={16} /> : <Bot size={16} />}
-                    </div>
-                    
-                    <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                      msg.role === "user" 
-                        ? "bg-foreground text-background rounded-tr-sm" 
-                        : "bg-card border border-border shadow-sm rounded-tl-sm text-foreground/90"
-                    }`}>
-                      {msg.role === "bot" ? (
-                        <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.text) }} />
-                      ) : (
-                        msg.text
-                      )}
-                    </div>
-                  </motion.div>
+          {/* Suggestion chips */}
+          {messages.length <= 1 && !isLoading && (
+            <div className="border-t border-hairline px-5 py-4 md:px-7">
+              <p className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-faint">
+                Try asking
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {SUGGESTIONS.map((s) => (
+                  <li key={s}>
+                    <button
+                      type="button"
+                      onClick={() => handleQuery(s)}
+                      className="rounded-full border border-hairline bg-surface px-3 py-1.5 text-left text-[12.5px] text-muted transition-colors hover:border-hairline-strong hover:text-foreground"
+                    >
+                      {s}
+                    </button>
+                  </li>
                 ))}
-                
-                {isLoading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-3 flex-row"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-accent-1/20 text-accent-hover flex items-center justify-center shrink-0">
-                      <Bot size={16} />
-                    </div>
-                    <div className="bg-card border border-border shadow-sm rounded-2xl rounded-tl-sm px-4 py-4 flex items-center gap-1">
-                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0 }} className="w-2 h-2 rounded-full bg-accent-hover" />
-                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="w-2 h-2 rounded-full bg-accent-hover" />
-                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }} className="w-2 h-2 rounded-full bg-accent-hover" />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <div className="h-4" />
+              </ul>
             </div>
+          )}
 
-            {/* Input Row */}
-            <div className="p-4 bg-card/80 backdrop-blur-md border-t border-border shrink-0">
-              <div className="relative flex items-center">
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask about my systems experience..."
-                  disabled={isLoading}
-                  className="w-full bg-background border border-border rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent-1/50 transition-all disabled:opacity-50"
-                  aria-label="Message to AI"
-                />
-                <button
-                  onClick={() => handleQuery(inputValue)}
-                  disabled={isLoading || !inputValue.trim()}
-                  className="absolute right-2 p-2 rounded-lg bg-accent-1 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
-                  aria-label="Send message"
-                >
-                  <Send size={16} />
-                </button>
-              </div>
+          {/* Input */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleQuery(inputValue);
+            }}
+            className="shrink-0 border-t border-hairline bg-background/40 px-4 py-4 md:px-6"
+          >
+            <div className="relative flex items-center">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={onKeyDown}
+                placeholder="Ask about my systems experience..."
+                disabled={isLoading}
+                aria-label="Message to AI"
+                className="w-full rounded-full border border-hairline bg-surface px-5 py-3 pr-12 text-[14px] text-foreground placeholder:text-faint focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:cursor-not-allowed disabled:opacity-60"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !inputValue.trim()}
+                aria-label="Send message"
+                className="absolute right-1.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background transition-all duration-300 ease-out-expo hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+              >
+                <Send size={14} />
+              </button>
             </div>
-          </motion.div>
-
-        </div>
+          </form>
+        </motion.div>
       </div>
     </section>
   );
