@@ -1,78 +1,144 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { RESUME } from "@/lib/resume";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { cn } from "@/lib/utils/cn";
+
+/**
+ * Map a 0-100 proficiency to a qualitative label.
+ * Communicates depth without the cliche progress-bar vocabulary.
+ */
+function proficiencyLabel(level: number): string {
+  if (level >= 90) return "Core";
+  if (level >= 80) return "Strong";
+  if (level >= 70) return "Working";
+  return "Familiar";
+}
 
 export function Skills() {
-  return (
-    <section id="skills" className="py-16 lg:py-20 relative" aria-labelledby="skills-heading">
-      <div className="absolute inset-0 bg-gradient-radial from-accent-1/5 to-transparent pointer-events-none" />
-      
-      <div className="container mx-auto px-6 max-w-7xl relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
-          <div className="flex flex-col space-y-4 max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-accent-2/30 bg-accent-2/10 text-accent-2 text-sm font-medium w-fit">
-              <span>System Capabilities</span>
-            </div>
-            <h2 id="skills-heading" className="text-4xl md:text-5xl font-bold tracking-tight">
-              Tools I use to <span className="text-gradient">Scale</span>
-            </h2>
-            <p className="text-fg-secondary text-lg font-light leading-relaxed">
-              I don&apos;t just collect syntax. I architect systems by combining these tools contextually—orchestrating LLMs, decoupling services, and pushing pixels efficiently to the GPU.
-            </p>
-          </div>
-        </div>
+  const reduce = useReducedMotion();
 
-        {/* Dynamic Capability Clusters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {RESUME.skillCategories.map((category, index) => (
-            <motion.div
+  return (
+    <section
+      id="skills"
+      aria-labelledby="skills-heading"
+      className="relative py-24 md:py-32 lg:py-40"
+    >
+      <div className="container-page">
+        <SectionHeader
+          eyebrow="Capabilities"
+          id="skills-heading"
+          title={
+            <>
+              Tools chosen <span className="text-gradient">contextually</span>,
+              not collected.
+            </>
+          }
+          description="A pragmatic surface across systems, frontend, cloud, and data — depth where it counts, exposure where it helps."
+        />
+
+        <div className="grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-hairline bg-hairline md:grid-cols-2">
+          {RESUME.skillCategories.map((category, idx) => (
+            <motion.article
               key={category.label}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: reduce ? 0 : 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "400px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="glass-card p-8 group hover:border-accent-2/30 transition-colors"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{
+                duration: 0.6,
+                ease: [0.16, 1, 0.3, 1],
+                delay: reduce ? 0 : idx * 0.06,
+              }}
+              className="group relative bg-background p-7 md:p-9 transition-colors duration-500 hover:bg-surface"
             >
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 rounded-xl bg-accent-1/10 flex items-center justify-center text-2xl border border-accent-1/20 group-hover:scale-110 transition-transform">
-                  {category.icon}
+              {/* Header row */}
+              <header className="flex items-baseline justify-between gap-4">
+                <div>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-faint">
+                    {String(idx + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-2 font-display text-xl md:text-2xl font-medium tracking-tight text-foreground">
+                    {category.label}
+                  </h3>
                 </div>
-                <h3 className="text-2xl font-bold tracking-tight text-foreground">{category.label}</h3>
-              </div>
-              
-              <div className="space-y-6">
+                <span
+                  aria-hidden="true"
+                  className="text-2xl opacity-60 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+                >
+                  {category.icon}
+                </span>
+              </header>
+
+              <ul className="mt-8 divide-y divide-hairline">
                 {category.items.map((skill, i) => (
-                  <div key={skill.name} className="relative group/skill">
-                    <div className="flex justify-between items-end mb-2">
-                      <span className="font-medium text-foreground tracking-wide">{skill.name}</span>
-                      <span className="text-xs font-mono text-fg-secondary border border-border px-2 py-0.5 rounded-full bg-background transition-colors group-hover/skill:border-accent-1 group-hover/skill:text-accent-1">
-                        {skill.level}% depth
+                  <li
+                    key={skill.name}
+                    className="flex items-center justify-between gap-4 py-3.5"
+                  >
+                    <span className="text-[15px] text-foreground/90">
+                      {skill.name}
+                    </span>
+                    <span className="flex items-center gap-3">
+                      <ProficiencyMeter level={skill.level} index={i} />
+                      <span
+                        className={cn(
+                          "w-16 text-right font-mono text-[10.5px] uppercase tracking-[0.16em] tabular",
+                          skill.level >= 80 ? "text-foreground" : "text-muted",
+                        )}
+                      >
+                        {proficiencyLabel(skill.level)}
                       </span>
-                    </div>
-                    {/* Animated capability line (not a generic progress bar, stylized capability wire) */}
-                    <div className="h-0.5 w-full bg-border rounded-full overflow-hidden relative">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true, margin: "400px" }}
-                        transition={{ duration: 1, delay: 0.2 + (i * 0.1), ease: "easeOut" }}
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-accent-1 to-accent-2"
-                      />
-                      {/* Scanning blip */}
-                      <motion.div
-                        animate={{ left: ["0%", "100%", "0%"], opacity: [0, 1, 0] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear", delay: i * 0.5 }}
-                        className="absolute top-[-2px] w-4 h-1.5 bg-white blur-[2px] rounded-full"
-                      />
-                    </div>
-                  </div>
+                    </span>
+                  </li>
                 ))}
-              </div>
-            </motion.div>
+              </ul>
+            </motion.article>
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+interface ProficiencyMeterProps {
+  level: number;
+  index: number;
+}
+
+/**
+ * ProficiencyMeter — minimal 5-dot capability indicator.
+ * Replaces the noisy gradient bar + scanning blip from the previous design.
+ */
+function ProficiencyMeter({ level, index }: ProficiencyMeterProps) {
+  const reduce = useReducedMotion();
+  // Map 0-100 to a 0-5 dot count; we keep 5 dots so the row feels uniform.
+  const filled = Math.round((level / 100) * 5);
+
+  return (
+    <div className="flex items-center gap-1" role="img" aria-label={`Proficiency ${level}%`}>
+      {Array.from({ length: 5 }, (_, i) => {
+        const isFilled = i < filled;
+        return (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, scale: 0.4 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+              duration: 0.4,
+              delay: reduce ? 0 : 0.05 * i + 0.04 * index,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className={cn(
+              "h-1.5 w-1.5 rounded-full transition-colors duration-500",
+              isFilled
+                ? "bg-foreground group-hover:bg-gradient-accent"
+                : "bg-foreground/15",
+            )}
+          />
+        );
+      })}
+    </div>
   );
 }

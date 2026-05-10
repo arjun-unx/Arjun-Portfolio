@@ -1,24 +1,28 @@
-'use client';
+"use client";
 
-import { useTheme } from '@/lib/hooks/useTheme';
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/lib/hooks/useTheme";
 
 /**
- * ThemeToggle — accessible button for dark/light mode.
- * Icon visibility controlled by CSS [data-theme] attribute on <html>.
+ * ThemeToggle — accessible button toggling dark/light mode.
+ * Icon swap is driven by CSS [data-theme] selectors so it can animate
+ * without remounting between states.
  */
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const next = theme === "dark" ? "light" : "dark";
 
   return (
     <button
       id="theme-toggle"
+      type="button"
       onClick={toggleTheme}
-      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      aria-label={`Switch to ${next} mode`}
+      title={`Switch to ${next} mode`}
       data-testid="theme-toggle"
     >
-      <span className="icon-sun" aria-hidden="true">☀</span>
-      <span className="icon-moon" aria-hidden="true">☽</span>
+      <Sun size={16} className="icon-sun" aria-hidden="true" />
+      <Moon size={16} className="icon-moon" aria-hidden="true" />
     </button>
   );
 }

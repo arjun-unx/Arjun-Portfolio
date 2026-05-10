@@ -1,125 +1,198 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { RESUME } from "@/lib/resume";
-import { Mail, Phone, ExternalLink, Copy, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
+import { ArrowUpRight, Check, Copy, Github, Linkedin, Mail } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { RESUME } from "@/lib/resume";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { cn } from "@/lib/utils/cn";
+
+const SECONDARY_LINKS = [
+  {
+    key: "linkedin",
+    label: "LinkedIn",
+    handle: "arjunramesh163",
+    href: RESUME.contact.linkedin,
+    icon: Linkedin,
+  },
+  {
+    key: "github",
+    label: "GitHub",
+    handle: "arjun-unx",
+    href: RESUME.contact.github,
+    icon: Github,
+  },
+  {
+    key: "leetcode",
+    label: "LeetCode",
+    handle: "arjun_unx",
+    href: RESUME.contact.leetcode,
+    icon: LeetcodeMark,
+  },
+] as const;
 
 export function Contact() {
-  const [copied, setCopied] = useState<string | null>(null);
+  const reduce = useReducedMotion();
+  const [copied, setCopied] = useState(false);
 
-  const copyToClipboard = (text: string, type: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(type);
-    setTimeout(() => setCopied(null), 2000);
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(RESUME.contact.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // ignore — not all environments allow clipboard writes
+    }
   };
 
   return (
-    <section id="contact" className="py-16 lg:py-20 relative" aria-labelledby="contact-heading">
-      <div className="container mx-auto px-6 max-w-7xl relative z-10">
-        
-        <div className="flex flex-col space-y-4 mb-12 items-center text-center">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-accent-1/30 bg-accent-1/10 text-accent-hover text-sm font-medium w-fit">
-            <span>Get in Touch</span>
+    <section
+      id="contact"
+      aria-labelledby="contact-heading"
+      className="relative py-24 md:py-32 lg:py-40"
+    >
+      <div className="container-page">
+        <SectionHeader
+          eyebrow="Contact"
+          id="contact-heading"
+          align="center"
+          title={
+            <>
+              Let&apos;s build something{" "}
+              <span className="text-gradient">deliberate</span>.
+            </>
+          }
+          description="Currently open to senior software roles — backend, full-stack product, or platform. The fastest path is email; I usually reply within a day."
+        />
+
+        {/* Primary email card */}
+        <motion.div
+          initial={{ opacity: 0, y: reduce ? 0 : 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="surface surface-shine relative mx-auto max-w-3xl overflow-hidden p-7 md:p-10"
+        >
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-px rounded-[inherit]"
+            style={{
+              background:
+                "radial-gradient(50% 80% at 50% 0%, var(--accent-soft), transparent 60%)",
+              opacity: 0.7,
+            }}
+          />
+
+          <div className="relative z-10 flex flex-col items-center text-center md:flex-row md:items-center md:justify-between md:text-left">
+            <div className="flex items-center gap-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-hairline bg-surface text-foreground">
+                <Mail size={20} strokeWidth={1.6} />
+              </span>
+              <div>
+                <p className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-faint">
+                  Reach out
+                </p>
+                <a
+                  href={`mailto:${RESUME.contact.email}`}
+                  className="mt-1 block font-display text-xl md:text-2xl font-medium tracking-tight text-foreground hover:text-gradient transition-all"
+                >
+                  {RESUME.contact.email}
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center gap-2 md:mt-0">
+              <button
+                type="button"
+                onClick={copyEmail}
+                className={cn(
+                  "btn btn-ghost group",
+                  copied && "border-hairline-strong",
+                )}
+                aria-live="polite"
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                <span>{copied ? "Copied" : "Copy"}</span>
+              </button>
+              <a
+                href={`mailto:${RESUME.contact.email}`}
+                className="btn btn-primary group"
+              >
+                <span>Send email</span>
+                <ArrowUpRight
+                  size={14}
+                  className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </a>
+            </div>
           </div>
-          <h2 id="contact-heading" className="text-4xl md:text-5xl font-bold tracking-tight">
-            Let&apos;s build <span className="text-gradient">Systems</span>
-          </h2>
-          <p className="text-fg-secondary max-w-2xl text-lg font-light mx-auto">
-            Currently open to opportunities. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
-          </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          
-          <motion.a
-            href={`mailto:${RESUME.contact.email}`}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "400px" }}
-            transition={{ duration: 0.5 }}
-            className="glass-card p-6 group hover:border-accent-1/50 transition-colors flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-accent-1/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-12 h-12 rounded-full border border-accent-1/20 bg-accent-1/10 flex items-center justify-center text-accent-hover group-hover:scale-110 transition-transform">
-              <Mail size={20} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">Email</h3>
-              <p className="text-sm text-fg-secondary">Drop a line</p>
-            </div>
-          </motion.a>
-
-          <motion.a
-            href={RESUME.contact.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "400px" }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="glass-card p-6 group hover:border-blue-500/50 transition-colors flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden"
-          >
-            <div className="absolute top-4 right-4 text-fg-secondary opacity-0 group-hover:opacity-100 transition-opacity">
-               <ExternalLink size={16} />
-            </div>
-            <div className="w-12 h-12 rounded-full border border-blue-500/20 bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">LinkedIn</h3>
-              <p className="text-sm text-fg-secondary">Network</p>
-            </div>
-          </motion.a>
-
-          <motion.a
-            href={RESUME.contact.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "400px" }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="glass-card p-6 group hover:border-foreground/50 transition-colors flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden"
-          >
-            <div className="absolute top-4 right-4 text-fg-secondary opacity-0 group-hover:opacity-100 transition-opacity">
-               <ExternalLink size={16} />
-            </div>
-            <div className="w-12 h-12 rounded-full border border-border bg-background flex items-center justify-center text-foreground group-hover:scale-110 transition-transform">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">GitHub</h3>
-              <p className="text-sm text-fg-secondary">Code</p>
-            </div>
-          </motion.a>
-
-          <motion.a
-            href={RESUME.contact.leetcode}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "400px" }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="glass-card p-6 group hover:border-foreground/50 transition-colors flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden"
-          >
-            <div className="absolute top-4 right-4 text-fg-secondary opacity-0 group-hover:opacity-100 transition-opacity">
-               <ExternalLink size={16} />
-            </div>
-            <div className="w-12 h-12 rounded-full border border-border bg-background flex items-center justify-center text-foreground group-hover:scale-110 transition-transform">
-              <svg width="20" height="20" viewBox="0 0 50 50" fill="currentColor">
-                <path d="M30.5 4.5L12 23l18.5 18.5 4.5-4.5L21 23l14-14z"/>
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">LeetCode</h3>
-              <p className="text-sm text-fg-secondary">Problems</p>
-            </div>
-          </motion.a>
-
-        </div>
+        {/* Secondary links */}
+        <ul className="mx-auto mt-6 grid max-w-3xl grid-cols-1 gap-3 md:grid-cols-3">
+          {SECONDARY_LINKS.map((link, i) => {
+            const Icon = link.icon;
+            return (
+              <motion.li
+                key={link.key}
+                initial={{ opacity: 0, y: reduce ? 0 : 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.55,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: reduce ? 0 : i * 0.05,
+                }}
+              >
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="surface lift surface-shine group flex items-center justify-between gap-4 px-5 py-4"
+                >
+                  <span className="flex items-center gap-3">
+                    <Icon className="text-muted transition-colors group-hover:text-foreground" />
+                    <span className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">
+                        {link.label}
+                      </span>
+                      <span className="font-mono text-[11px] tabular text-muted">
+                        @{link.handle}
+                      </span>
+                    </span>
+                  </span>
+                  <ArrowUpRight
+                    size={14}
+                    className="text-faint transition-all duration-300 ease-out-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+                  />
+                </a>
+              </motion.li>
+            );
+          })}
+        </ul>
       </div>
     </section>
+  );
+}
+
+/** Lightweight LeetCode mark — no external image dependency. */
+function LeetcodeMark({ className }: { className?: string }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M14.5 4 8 10.5l6.5 6.5" />
+      <path d="M8 10.5h11" />
+      <path d="M19.5 4 13 10.5" opacity="0" />
+    </svg>
   );
 }

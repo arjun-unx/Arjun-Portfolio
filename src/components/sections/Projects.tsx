@@ -1,120 +1,203 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  Boxes,
+  Cloud,
+  Cpu,
+  Github,
+  Layers,
+  Server,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { RESUME } from "@/lib/resume";
-import { Github, Play, ArrowUpRight, Cpu, Layers, Server } from "lucide-react";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { cn } from "@/lib/utils/cn";
 
-const getIcon = (iconName: string) => {
-  switch (iconName) {
-    case "brain": return <Cpu size={24} className="text-purple-400" />;
-    case "layout": return <Layers size={24} className="text-blue-400" />;
-    case "server": return <Server size={24} className="text-emerald-400" />;
-    default: return <Play size={24} />;
-  }
+const ICON_MAP: Record<string, LucideIcon> = {
+  brain: Cpu,
+  layout: Layers,
+  server: Server,
+  cloud: Cloud,
+  boxes: Boxes,
 };
 
+function getProjectIcon(key?: string): LucideIcon {
+  if (!key) return Sparkles;
+  return ICON_MAP[key] ?? Sparkles;
+}
+
 export function Projects() {
+  const reduce = useReducedMotion();
+
   return (
-    <section id="projects" className="py-16 lg:py-20 relative" aria-labelledby="proj-heading">
-      <div className="container mx-auto px-6 max-w-7xl relative z-10">
-        
-        <div className="flex flex-col space-y-4 mb-12 items-center text-center">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-accent-1/30 bg-accent-1/10 text-accent-hover text-sm font-medium w-fit">
-            <span>Engineering Showcase</span>
-          </div>
-          <h2 id="proj-heading" className="text-4xl md:text-5xl font-bold tracking-tight">
-            Built from <span className="text-gradient">Scratch</span>
-          </h2>
-          <p className="text-fg-secondary max-w-2xl text-lg font-light mx-auto">
-            Real systems addressing RAG pipelines, distributed events, and SaaS architecture. No tutorial apps, just applied engineering.
-          </p>
-        </div>
+    <section
+      id="projects"
+      aria-labelledby="proj-heading"
+      className="relative py-24 md:py-32 lg:py-40"
+    >
+      <div className="container-page">
+        <SectionHeader
+          eyebrow="Selected work"
+          id="proj-heading"
+          title={
+            <>
+              Real systems, <span className="text-gradient">end-to-end</span>.
+            </>
+          }
+          description="Production-leaning projects: RAG retrieval, multi-agent orchestration, distributed events, and serverless workflows. No tutorial work."
+        />
 
-        {/* High-end Bento grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {RESUME.projects.map((project, index) => (
-            <motion.div
-              key={project.name}
-              initial={{ opacity: 0, scale: 0.95, y: 30 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true, margin: "400px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`glass-card group overflow-hidden relative flex flex-col ${
-                index === 0 ? "min-h-[300px] lg:col-span-2 lg:flex-row" : "min-h-[auto]"
-              }`}
+        <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6">
+          {RESUME.projects.map((project, i) => {
+            const Icon = getProjectIcon(project.icon);
+            // First project takes the full row; remaining alternate as 3+3 on desktop.
+            const span = i === 0 ? "lg:col-span-6" : "lg:col-span-3";
+            return (
+              <motion.li
+                key={project.name}
+                initial={{ opacity: 0, y: reduce ? 0 : 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{
+                  duration: 0.7,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: reduce ? 0 : Math.min(i * 0.06, 0.3),
+                }}
+                className={cn("group", span)}
+              >
+                <ProjectCard project={project} icon={Icon} featured={i === 0} />
+              </motion.li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+interface ProjectCardProps {
+  project: (typeof RESUME)["projects"][number];
+  icon: LucideIcon;
+  featured: boolean;
+}
+
+function ProjectCard({ project, icon: Icon, featured }: ProjectCardProps) {
+  return (
+    <article
+      className={cn(
+        "surface surface-shine lift relative flex h-full flex-col overflow-hidden p-7 md:p-8",
+        featured && "md:p-10 lg:flex-row lg:gap-12",
+      )}
+    >
+      {/* Hover-only ambient gradient — never paints unless hovered */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+        style={{
+          background:
+            "radial-gradient(60% 80% at 30% 0%, var(--accent-soft), transparent 60%)",
+        }}
+      />
+
+      <div className="relative z-10 flex flex-1 flex-col">
+        <header className="flex items-start justify-between gap-4">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-hairline bg-surface text-foreground">
+            <Icon size={18} strokeWidth={1.6} />
+          </span>
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${project.name} on GitHub`}
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted transition-colors hover:text-foreground"
             >
-              {/* Dynamic Gradients specific to project index */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none ${
-                index === 0 ? "bg-gradient-to-tr from-purple-500 to-blue-500" :
-                index === 1 ? "bg-gradient-to-tr from-blue-500 to-emerald-500" :
-                "bg-gradient-to-tr from-emerald-500 to-amber-500"
-              }`} />
+              <Github size={13} />
+              <span>Source</span>
+              <ArrowUpRight
+                size={12}
+                className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </a>
+          )}
+        </header>
 
-              <div className={`px-6 lg:p-8 flex flex-col justify-center flex-1 relative z-10 ${index === 0 ? "lg:w-1/2" : ""}`}>
-                <div className="w-12 h-12 rounded-xl bg-background border border-border shadow-inner flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  {getIcon(project.icon || "")}
-                </div>
-                
-                <h3 className="text-2xl font-bold mb-3 tracking-tight group-hover:text-accent-hover transition-colors">
-                  {project.name}
-                </h3>
-                
-                <p className="text-sm text-fg-secondary leading-relaxed mb-6 flex-1">
-                  {project.description}
-                </p>
-                
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.stack.map((tech: string) => (
-                    <span key={tech} className="px-2 py-1 text-[11px] font-mono border border-border rounded-lg bg-background/50 text-foreground/70">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+        <h3 className="mt-7 font-display text-xl md:text-2xl font-medium tracking-tight text-foreground">
+          {project.name}
+        </h3>
+        <p className="mt-3 max-w-prose text-[14.5px] leading-[1.7] text-muted">
+          {project.description}
+        </p>
 
-                <div className="flex items-center gap-4 mt-auto">
-                  {project.githubUrl && (
-                    <a 
-                      href={project.githubUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm font-semibold hover:text-accent-hover transition-colors"
-                    >
-                      <Github size={18} className="mr-2" /> View Source <ArrowUpRight size={14} className="ml-1 opacity-50" />
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <div className={`relative overflow-hidden bg-background/30 border-t lg:border-t-0 lg:border-l border-border/50 flex items-center justify-center ${index === 0 ? "p-8 lg:w-1/2" : "h-32"}`}>
-                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-overlay" />
-                 <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-                    className={`w-[150%] h-[150%] absolute rounded-full border border-border/20 ${
-                      index === 0 ? "border-dashed" : "border-dotted"
-                    }`}
-                 />
-                 <motion.div 
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 70, repeat: Infinity, ease: "linear" }}
-                    className="w-[100%] h-[100%] absolute rounded-full border border-accent-1/10 border-solid"
-                 />
-                 {index === 0 && (
-                   <div className="relative glass-card w-64 h-48 flex items-center justify-center shadow-xl group-hover:rotate-y-12 transition-transform duration-500 perspective-[1000px]">
-                      <div className="w-full max-w-[80%] space-y-2">
-                        <div className="h-2 bg-purple-500/50 rounded w-1/3" />
-                        <div className="h-2 bg-blue-500/50 rounded w-full" />
-                        <div className="h-2 bg-blue-500/50 rounded w-4/5" />
-                        <div className="h-2 border-dashed border-b border-border w-full my-4" />
-                        <div className="h-2 text-xs font-mono text-fg-secondary">query(intent)</div>
-                      </div>
-                   </div>
-                 )}
-              </div>
-            </motion.div>
+        <div className="mt-6 flex flex-wrap gap-1.5">
+          {project.stack.map((tech) => (
+            <span key={tech} className="tag">
+              {tech}
+            </span>
           ))}
         </div>
       </div>
-    </section>
+
+      {featured && (
+        <div className="relative mt-8 hidden flex-1 items-center justify-center lg:mt-0 lg:flex">
+          <FeaturedDecoration />
+        </div>
+      )}
+    </article>
+  );
+}
+
+/**
+ * FeaturedDecoration — subtle decorative artwork for the lead project tile.
+ * Pure CSS; no images, no rotating rings (avoids battery drain of forever-spinning SVG).
+ */
+function FeaturedDecoration() {
+  return (
+    <div
+      aria-hidden="true"
+      className="relative h-48 w-full max-w-md select-none"
+    >
+      {/* Concentric hairlines */}
+      <div className="absolute inset-0 grid place-items-center">
+        {[0.4, 0.6, 0.85, 1].map((scale, i) => (
+          <div
+            key={i}
+            className="absolute aspect-square w-[80%] rounded-full border border-hairline"
+            style={{
+              transform: `scale(${scale})`,
+              opacity: 1 - i * 0.18,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Center node */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="relative h-12 w-12 rounded-2xl border border-hairline-strong bg-surface backdrop-blur-md">
+          <span className="absolute inset-0 grid place-items-center">
+            <span className="h-2 w-2 rounded-full bg-gradient-accent" />
+          </span>
+        </div>
+      </div>
+
+      {/* Orbiting nodes (CSS only; pause on hover) */}
+      <ul className="absolute inset-0">
+        {[
+          { top: "10%", left: "70%" },
+          { top: "60%", left: "82%" },
+          { top: "78%", left: "20%" },
+          { top: "30%", left: "12%" },
+        ].map((pos, i) => (
+          <li
+            key={i}
+            className="absolute h-2 w-2 rounded-full bg-foreground/40"
+            style={pos}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }

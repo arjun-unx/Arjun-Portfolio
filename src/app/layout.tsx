@@ -1,63 +1,124 @@
-import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
-import { CursorDot } from '@/components/ui/CursorDot';
-import './globals.css';
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { CursorDot } from "@/components/ui/CursorDot";
+import { AmbientBackground } from "@/components/ui/AmbientBackground";
+import { RESUME } from "@/lib/resume";
+import "./globals.css";
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
+const SITE_URL = "https://arjunramesh.dev";
+const TITLE = "Arjun Ramesh — Software Engineer";
+const DESCRIPTION =
+  "Software engineer building scalable backends, AI systems, and refined product UI. Available for full-stack and platform roles.";
+
 export const metadata: Metadata = {
-  title: 'Arjun Ramesh — Software Engineer',
-  description:
-    'Software Development Engineer specializing in full-stack systems, event-driven architecture, and high-performance web applications.',
-  keywords: ['Arjun Ramesh', 'Software Engineer', 'Full Stack', 'Spring Boot', 'Angular', 'React', 'Java', 'TypeScript'],
+  metadataBase: new URL(SITE_URL),
+  title: { default: TITLE, template: "%s — Arjun Ramesh" },
+  description: DESCRIPTION,
+  keywords: [
+    "Arjun Ramesh",
+    "Software Engineer",
+    "Full Stack",
+    "Spring Boot",
+    "Angular",
+    "React",
+    "Next.js",
+    "Java",
+    "TypeScript",
+    "RAG",
+    "AI",
+  ],
+  authors: [{ name: "Arjun Ramesh", url: SITE_URL }],
+  creator: "Arjun Ramesh",
   openGraph: {
-    title: 'Arjun Ramesh — Software Engineer',
-    description: 'Full-stack SDE specializing in scalable systems, event-driven architecture, and performance-critical applications.',
-    type: 'website',
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: "Arjun Ramesh",
+    locale: "en_US",
+    type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  alternates: { canonical: SITE_URL },
 };
 
-// FOUC Prevention Script — runs BEFORE React hydration.
-// Reads localStorage and sets data-theme on <html> synchronously.
-// Bug #1 fix: eliminates flash of wrong theme on load.
-const THEME_SCRIPT = `
-(function() {
-  try {
-    var stored = localStorage.getItem('theme');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var theme = stored || (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-  } catch(e) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  }
-})();
-`;
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafaf9" },
+    { media: "(prefers-color-scheme: dark)", color: "#08080b" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
+// Inline pre-paint script — prevents FOUC by setting data-theme before React hydrates.
+const THEME_BOOTSTRAP = `(function(){try{var s=localStorage.getItem('theme');var p=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme', s || (p?'dark':'light'));}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();`;
+
+const PERSON_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: RESUME.name,
+  jobTitle: RESUME.title,
+  email: `mailto:${RESUME.contact.email}`,
+  url: SITE_URL,
+  sameAs: [RESUME.contact.github, RESUME.contact.linkedin, RESUME.contact.leetcode],
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: RESUME.education.institution,
+  },
+  knowsAbout: [
+    "Software Engineering",
+    "Distributed Systems",
+    "Retrieval-Augmented Generation",
+    "Backend Development",
+    "Frontend Engineering",
+  ],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme="dark"
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
-        {/* Inline FOUC prevention — must run before paint */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSONLD) }}
+        />
       </head>
       <body>
-        {/* Bug #10 fix: skip-to-content link for keyboard/screen reader users */}
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground">
+        <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
 
+        <AmbientBackground />
         <CursorDot />
         <Navbar />
 

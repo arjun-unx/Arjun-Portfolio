@@ -1,9 +1,11 @@
 "use client";
 import { useEffect } from "react";
+
 /**
  * useCursor — custom cursor dot + lagged ring on desktop.
- * Bug fix: RAF loop is cancelled on unmount; paused on tab blur.
- * Only activates on pointer-capable devices.
+ * - Skips touch / coarse-pointer / reduced-motion environments
+ * - Cancels RAF on unmount; pauses while the tab is hidden
+ * - Expands the ring near interactive targets (buttons, links, inputs)
  */
 export function useCursor(
   dotRef: React.RefObject<HTMLDivElement | null>,
@@ -14,8 +16,10 @@ export function useCursor(
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    // Skip on touch-only devices
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    // Skip on touch-only / reduced-motion
+    const fineHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!fineHover.matches || reduced.matches) {
       dot.style.display = "none";
       ring.style.display = "none";
       return;
@@ -31,7 +35,7 @@ export function useCursor(
     const onMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
     };
 
     const onMouseLeave = () => {
@@ -44,18 +48,37 @@ export function useCursor(
       ring.style.opacity = "0.4";
     };
 
-    // Bug fix: pause RAF when tab is hidden
+    const setHoverState = (active: boolean) => {
+      ring.classList.toggle("is-hover", active);
+      if (active) {
+        ring.style.width = "56px";
+        ring.style.height = "56px";
+        ring.style.margin = "-28px 0 0 -28px";
+      } else {
+        ring.style.width = "";
+        ring.style.height = "";
+        ring.style.margin = "";
+      }
+    };
+
+    const onPointerOver = (e: PointerEvent) => {
+      const t = e.target as Element | null;
+      const interactive = !!t?.closest?.(
+        'a, button, [role="button"], input, textarea, select, label[for]',
+      );
+      setHoverState(interactive);
+    };
+
     const onVisibility = () => {
       isPaused = document.hidden;
     };
 
     function animateRing() {
       if (!isPaused) {
-        ringX += (mouseX - ringX) * 0.14;
-        ringY += (mouseY - ringY) * 0.14;
-        // Null-safe: ring is captured from outer scope, guaranteed non-null by guard above
+        ringX += (mouseX - ringX) * 0.16;
+        ringY += (mouseY - ringY) * 0.16;
         const el = ringRef.current;
-        if (el) el.style.transform = `translate(${ringX}px, ${ringY}px)`;
+        if (el) el.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
       }
       rafId = requestAnimationFrame(animateRing);
     }
@@ -65,14 +88,15 @@ export function useCursor(
     document.addEventListener("mousemove", onMouseMove, { passive: true });
     document.addEventListener("mouseleave", onMouseLeave);
     document.addEventListener("mouseenter", onMouseEnter);
+    document.addEventListener("pointerover", onPointerOver, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      // Bug fix: always cancel the RAF on unmount
       cancelAnimationFrame(rafId);
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
       document.removeEventListener("mouseenter", onMouseEnter);
+      document.removeEventListener("pointerover", onPointerOver);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [dotRef, ringRef]);
